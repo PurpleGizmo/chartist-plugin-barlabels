@@ -1,14 +1,14 @@
 {
-  "name": "chartist-plugin-barlabels",
-  "description": "Bar Labels Plugin for Chartist.js",
+  "name": "chartist-plugin-barlabels-webpack",
+  "description": "Bar Labels Plugin for Chartist.js and webpack bundling",
   "version": "0.0.5",
-  "author": "Matt Gibbs",
+  "author": "Robert Miller, Matt Gibbs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mtgibbs/chartist-plugin-barlabels.git"
+    "url": "https://github.com/PurpleGizmo/chartist-plugin-barlabels.git"
   },
   "bugs": {
-    "url": "https://github.com/mtgibbs/chartist-plugin-barlabels/issues"
+    "url": "https://github.com/PurpleGizmo/chartist-plugin-barlabels/issues"
   },
   "keywords": [
     "chartist",
@@ -25,7 +25,7 @@
   "licenses": [
     {
       "type": "WTFPL",
-      "url": "https://github.com/mtgibbs/chartist-plugin-barlabels/blob/master/LICENSE"
+      "url": "https://github.com/PurpleGizmo/chartist-plugin-barlabels/blob/master/LICENSE"
     }
   ],
   "dependencies": {},
@@ -51,7 +51,7 @@
     "test": "grunt test"
   },
   "config": {
-    "banner": "/* chartist-plugin-barlabels <%= pkg.version %>\n * Copyright © <%= year %> Matt Gibbs\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */\n",
+    "banner": "/* chartist-plugin-barlabels-webpack <%= pkg.version %>\n * Copyright © <%= year %> Matt Gibbs\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */\n",
     "src": "src",
     "dist": "dist",
     "tmp": ".tmp",

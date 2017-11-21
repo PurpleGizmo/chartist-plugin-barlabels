@@ -1,0 +1,9 @@
+[
+	{
+		"sourceMap": true,
+		"outputFileName": "src/scripts/chartist-plugin-barlabels.min.js",
+		"inputFiles": [
+			"src/scripts/chartist-plugin-barlabels.js"
+		]
+	}
+]
