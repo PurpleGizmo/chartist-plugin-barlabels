@@ -1,9 +1,16 @@
 [
-	{
-		"sourceMap": true,
-		"outputFileName": "src/scripts/chartist-plugin-barlabels.min.js",
-		"inputFiles": [
-			"src/scripts/chartist-plugin-barlabels.js"
-		]
-	}
+  {
+    "outputFileName": "src/scripts/chartist-plugin-barlabels.min.js",
+    "inputFiles": [
+      "src/scripts/chartist-plugin-barlabels.js"
+    ],
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "dist/chartist-plugin-barlabels.min.js",
+	"inputFiles": [
+		"dist/chartist-plugin-barlabels.js"
+	],
+	"sourceMap": true
+  }
 ]

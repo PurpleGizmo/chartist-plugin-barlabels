@@ -54,7 +54,9 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
-    <None Include="dist\chartist-plugin-barlabels.min.js.map" />
+    <None Include="dist\chartist-plugin-barlabels.min.js.map">
+      <DependentUpon>chartist-plugin-barlabels.min.js</DependentUpon>
+    </None>
     <None Include="dist\LICENSE" />
     <None Include="package.json" />
     <None Include="README.md" />
@@ -65,7 +67,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="dist\chartist-plugin-barlabels.js" />
-    <Content Include="dist\chartist-plugin-barlabels.min.js" />
+    <Content Include="dist\chartist-plugin-barlabels.min.js">
+      <DependentUpon>chartist-plugin-barlabels.js</DependentUpon>
+    </Content>
     <Content Include="Gruntfile.js" />
     <Content Include="src\scripts\chartist-plugin-barlabels.es5.js">
       <DependentUpon>chartist-plugin-barlabels.js</DependentUpon>
