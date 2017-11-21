@@ -5,7 +5,7 @@
   "author": "Robert Miller, Matt Gibbs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PurpleGizmo/chartist-plugin-barlabels.git"
+    "url": "git+https://github.com/PurpleGizmo/chartist-plugin-barlabels.git"
   },
   "bugs": {
     "url": "https://github.com/PurpleGizmo/chartist-plugin-barlabels/issues"
@@ -56,5 +56,10 @@
     "dist": "dist",
     "tmp": ".tmp",
     "test": "test"
-  }
+  },
+  "homepage": "https://github.com/PurpleGizmo/chartist-plugin-barlabels#readme",
+  "directories": {
+    "test": "test"
+  },
+  "license": "ISC"
 }
