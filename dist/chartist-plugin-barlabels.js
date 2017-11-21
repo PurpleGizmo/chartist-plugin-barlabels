@@ -70,7 +70,9 @@
       Chartist.plugins.ctBarLabels = function(options) {
 
         return function ctBarLabels(chart) {
-          if (chart instanceof Chartist.Bar) {
+          // RKM: get name of constructor function and remove reliance on problematic instanceof method broken by webpack.
+          var constructorName = /^function\s+([\w\$]+)\s*\(/.exec( chart.__proto__.constructor.toString() );
+          if (constructorName.length === 2 && constructorName === 'Bar') {
 
             options = Chartist.extend({}, defaultOptionsBase, options);
             if (chart.options.horizontalBars) {
