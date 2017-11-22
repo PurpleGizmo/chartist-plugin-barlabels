@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Chartist Bar Labels Demo</title>
+	<meta name="description" content="A simple Chartist JavaScript plugin to put labels on top of bar charts.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+	<link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700|Slabo+27px' rel='stylesheet' type='text/css'>
+	<style>
+		html, body {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+			font-family: 'slabo 27px', sans-serif;
+			line-height: 1.3;
+			color: #353535;
+			background: #FBFCFC;
+			font-size: 110%;
+		}
+
+		a {
+			color: #F1853D;
+			text-decoration: none;
+		}
+
+		code {
+			font-weight: bold;
+		}
+
+		pre code {
+			font-weight: normal;
+		}
+
+		h1, h2, h3, h4, h5, h6 {
+			font-family: Oswald, helvetica, sans-serif;
+			text-transform: uppercase;
+			font-weight: lighter;
+		}
+
+		h1 {
+			font-size: 2.5rem;
+			margin-bottom: 0px;
+		}
+
+		h2 {
+			margin: 50px 0 20px;
+		}
+
+		.prettyprint {
+			border: 1px solid #ccc !important;
+			padding: 20px !important;
+			overflow: auto;
+			background: #fff;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+			border-radius: 3px;
+		}
+
+		pre .typ {
+			color: #F1853D;
+			font-weight: bold;
+		}
+
+		pre .pln {
+			color: #2b2b2b;
+		}
+
+		pre .kwd {
+			font-weight: bold;
+		}
+
+		.wrapper {
+			margin: 0 auto;
+			padding: 20px;
+			max-width: 800px;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		/* Chart styling */
+		.ct-chart {
+			margin-top: 50px;
+		}
+
+		.ct-label {
+			font-size: 0.9rem;
+		}
+
+		.ct-chart .ct-series-a .ct-bar {
+			stroke: #F1853D;
+			stroke-width: 100px;
+		}
+
+		.ct-chart-2 .ct-series-a .ct-bar {
+			stroke: #F1853D;
+			stroke-width: 40px;
+		}
+
+		.ct-bar-label {
+			font-size: 20px;
+			font-weight: bold;
+			fill: #fff;
+		}
+
+		.ct-target-line {
+			stroke: #062A5F;
+			stroke-width: 2px;
+			stroke-dasharray: 4px;
+		}
+
+		@media only screen and (max-width: 540px) {
+			.ct-chart .ct-series-a .ct-bar {
+				stroke-width: 50px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="ct-chart"></div>
+	<div class="ct-chart-2"></div>
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.js"></script>
+	<script src="src/scripts/chartist-plugin-barlabels.js"></script>
+	<script>
+		// Clear out the images we have for the README
+		$('.ct-chart, .ct-chart-2').html('');
+
+		/**
+		 * The top chart on the page
+		 */
+		var chart1 = new Chartist.Bar('.ct-chart', {
+			labels: ['Feb', 'Mar', 'Apr', 'May'],
+			series: [
+			  [19, 15, 9, 13]
+			],
+		}, {
+			height: 400,
+			axisY: {
+				onlyInteger: true
+			},
+			plugins: [
+			  Chartist.plugins.ctBarLabels()
+			]
+		});
+
+		/**
+		 * The bottom chart on the page
+		 */
+		var chart2 = new Chartist.Bar('.ct-chart-2', {
+			labels: ['% to Campaign Goal', '% to Prior Month', '% to Prior Year'],
+			series: [
+			  [127, 211, 146]
+			]
+		}, {
+			chartPadding: {
+				right: 50
+			},
+			height: 350,
+			horizontalBars: true,
+			reverseData: true,
+			axisX: {
+				labelInterpolationFnc: function (value) {
+					return value + '%';
+				},
+				onlyInteger: true,
+			},
+			axisY: {
+				offset: 135,
+			},
+			plugins: [
+			  Chartist.plugins.ctBarLabels({
+			  	position: {
+			  		x: function (data) {
+			  			return data.x1 + 50
+			  		}
+			  	},
+			  	labelOffset: {
+			  		y: 7
+			  	},
+			  	labelInterpolationFnc: function (text) {
+			  		return text + '%'
+			  	}
+			  })
+			]
+		});
+	</script>
+</body>
+</html>

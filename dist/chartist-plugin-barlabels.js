@@ -37,168 +37,92 @@
 		(function (window, document, Chartist) {
 			'use strict';
 
-			var defaultOptionsBase = {
-				labelClass: 'ct-label',
+			var defaultOptions = {
+				// The class name so you can style the text
+				labelClass: 'ct-bar-label',
+
+				// Use this to get the text of the data and you can return your own
+				// formatted text. For example, for a percentage: 
+				// {
+				//  labelInterpolationFnc: function (text) { return text + '%' }
+				// }
 				labelInterpolationFnc: Chartist.noop,
-				labelPositionFnc: undefined,
-				showZeroLabels: false,
-				includeIndexClass: false,
-				thresholdPercentage: 30,
-				thresholdOptions: {
-					belowLabelClass: 'ct-label-below',
-					aboveLabelClass: 'ct-label-above'
-				}
-			};
 
-			var defaultOptionsHorizontalBars = {
-				labelOffset: {
-					x: 2,
-					y: 4
-				},
-				textAnchor: 'start'
-			}
-
-			var defaultOptionsVerticalBars = {
+				// Depending on your font size you may need to tweak these
 				labelOffset: {
 					x: 0,
-					y: -2
+					y: 0
 				},
-				textAnchor: 'middle'
-			}
+
+				// If labelOffset doesn't work for you and you need more custom positioning
+				// you can use this. You can set position.x and position.y to functions and
+				// instead of centering + labelOffset. This will _completely_ override the
+				// built in positioning so labelOffset will no longer do anything. It will
+				// pass the bar `data` back as the first param.
+				//
+				// Example:
+				// Chartist.plugins.ctBarLabels({
+				//   position: {
+				//     x: function (data) {
+				//       return data.x1 + 50; // align left with 50px of padding
+				//     }
+				//   }
+				// });
+				position: {
+					x: null,
+					y: null
+				}
+			};
 
 			Chartist.plugins = Chartist.plugins || {};
 			Chartist.plugins.ctBarLabels = function (options) {
 
+				options = Chartist.extend({}, defaultOptions, options);
+
+				var positionX = options.position.x || function (data) {
+					return ((data.x1 + data.x2) / 2) + options.labelOffset.x;
+				};
+
+				var positionY = options.position.y || function (data) {
+					return ((data.y1 + data.y2) / 2) + options.labelOffset.y;
+				};
+
+				// RKM: Function for extracting function name.
+				var getFunctionName = function (fnc) {
+					var constructorName = /^function\s+([\w\$]+)\s*\(/.exec(fnc.__proto__.constructor.toString());
+					return (constructorName.length === 2) ? constructorName[1] : '';
+				}
+
 				return function ctBarLabels(chart) {
-					// RKM: get name of constructor function and remove reliance on problematic instanceof method broken by webpack.
-					var constructorName = /^function\s+([\w\$]+)\s*\(/.exec(chart.__proto__.constructor.toString());
-					if (constructorName.length === 2 && constructorName[1] === 'Bar') {
-
-						options = Chartist.extend({}, defaultOptionsBase, options);
-						if (chart.options.horizontalBars) {
-							options = Chartist.extend({}, defaultOptionsHorizontalBars, options);
-						} else {
-							options = Chartist.extend({}, defaultOptionsVerticalBars, options);
-						}
-
-						var highValue = getHighValue(chart);
-
+					// Since it's specific to bars, verify its a bar chart
+					// RKM: Use regex to extract name of constructor function for compatibility with webpack.
+					if (getFunctionName(chart) === 'Bar') {
 						chart.on('draw', function (data) {
+							// If the data we're drawing is the actual bar, let's add the text
+							// inside of it
 							if (data.type === 'bar') {
-
-								// bar value is in a different spot depending on whether or not the chart is horizontalBars
-								var barValue = data.value.x === undefined ? data.value.y : data.value.x;
-								var indexClass = options.includeIndexClass ? ['ct-bar-label-i-', data.seriesIndex, '-', data.index].join('') : '';
-								var thresholdClass = getThresholdClass(options.thresholdPercentage, options.thresholdOptions, highValue, barValue);
-								var positionData = handleLabelPosition(options.labelPositionFnc, highValue, barValue, options.thresholdPercentage);
-								options = Chartist.extend({}, options, positionData);
-
-								if (options.showZeroLabels || (!options.showZeroLabels && barValue != 0)) {
-									data.group.elem('text', {
-										x: ((options.startAtBase && chart.options.horizontalBars) ? data.x1 : data.x2) + options.labelOffset.x,
-										y: ((options.startAtBase && !chart.options.horizontalBars) ? data.y1 : data.y2) + options.labelOffset.y,
-										style: 'text-anchor: ' + options.textAnchor
-									}, [options.labelClass, indexClass, thresholdClass].join(' ')).text(options.labelInterpolationFnc(barValue));
-								}
+								data.group.elem('text', {
+									// This gets the middle point of the bars and then adds the
+									// optional offset to them
+									x: positionX(data),
+									y: positionY(data),
+									style: 'text-anchor: middle'
+								}, options.labelClass)
+									.text(
+									options.labelInterpolationFnc(
+									// If there's not x (horizontal bars) there must be a y
+									data.value.x || data.value.y
+									)
+								);
 							}
 						});
 					}
 				};
 			};
 
-			Chartist.plugins.ctBarLabels.InsetLabelsPositionHorizontal = function (data) {
-
-				if (data.high && data.value && data.threshold) {
-					var aboveThreshold = (data.value / data.high * 100 > data.threshold);
-
-					if (aboveThreshold) {
-						return {
-							labelOffset: {
-								x: -2,
-								y: 4
-							},
-							textAnchor: 'end'
-						}
-					} else {
-						return {
-							labelOffset: {
-								x: 2,
-								y: 4
-							},
-							textAnchor: 'start'
-						};
-					}
-				}
-			};
-
 		}(window, document, Chartist));
 
 		return Chartist.plugins.ctBarLabels;
-
-		function getHighValue(chart) {
-
-			// respect the user provided options for the max value first
-			if (chart.options.horizontalBars && chart.options.axisX && chart.options.axisX.high) {
-				// the horizontal chart has a high on the X axis
-				return chart.options.axisX.high;
-			} else if (!chart.options.horizontalBars && chart.options.axisY && chart.options.axisY.high) {
-				// the vertical chart has a high on the Y axis
-				return chart.options.axisY.high;
-			} else if (chart.options.high) {
-				// the chart has a high set on its own options
-				return chart.options.high;
-			} else {
-				// the user did not set any high value, so we will need to calculate the max value
-				if (chart.data && chart.data.series && chart.data.series.length > 0) {
-					var series = chart.data.series;
-					// check to see if there are multiple series
-					if (series[0].constructor === Array) {
-						series = series.reduce(function (prev, curr) {
-							return prev.concat(curr)
-						});
-					}
-
-					// return the highest value
-					return Math.max.apply(null, series);
-				}
-			}
-		}
-
-		function getThresholdClass(percentage, options, high, val) {
-			if (percentage && options && high) {
-				return (val / high * 100 > percentage) ? options.aboveLabelClass : options.belowLabelClass;
-			} else {
-				return '';
-			}
-		}
-
-		function handleLabelPosition(lblPositionFnc, highValue, barValue, thresholdPercentage) {
-			if (!lblPositionFnc)
-				return {};
-
-			var positionData = lblPositionFnc({
-				high: highValue,
-				value: barValue,
-				threshold: thresholdPercentage
-			});
-
-			var result = {};
-			// sanitize the object just in case they tried to override other options that will get merged
-			// TODO: make this terse
-			if (positionData.labelOffset) {
-				result.labelOffset = positionData.labelOffset;
-
-				if (positionData.labelOffset.x)
-					result.labelOffset.x = positionData.labelOffset.x;
-
-				if (positionData.labelOffset.y)
-					result.labelOffset.y = positionData.labelOffset.y;
-			}
-			if (positionData.textAnchor)
-				result.textAnchor = positionData.textAnchor;
-
-			return result;
-		}
 
 	}));
 

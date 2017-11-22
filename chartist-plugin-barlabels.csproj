@@ -71,6 +71,7 @@
       <DependentUpon>chartist-plugin-barlabels.js</DependentUpon>
     </Content>
     <Content Include="Gruntfile.js" />
+    <Content Include="index.html" />
     <Content Include="src\scripts\chartist-plugin-barlabels.es5.js">
       <DependentUpon>chartist-plugin-barlabels.js</DependentUpon>
     </Content>

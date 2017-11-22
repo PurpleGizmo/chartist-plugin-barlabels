@@ -1,8 +1,8 @@
 {
   "name": "chartist-plugin-barlabels-webpack",
   "description": "Bar Labels Plugin for Chartist.js and webpack bundling",
-  "version": "0.0.6",
-  "author": "Robert Miller, Matt Gibbs",
+  "version": "0.0.7",
+  "author": "Robert Miller; Yorkshire Interactive",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PurpleGizmo/chartist-plugin-barlabels.git"
@@ -24,7 +24,7 @@
   "browser": "dist/chartist-plugin-barlabels.js",
   "licenses": [
     {
-      "type": "WTFPL",
+      "type": "MIT",
       "url": "https://github.com/PurpleGizmo/chartist-plugin-barlabels/blob/master/LICENSE"
     }
   ],
@@ -51,7 +51,7 @@
     "test": "grunt test"
   },
   "config": {
-    "banner": "/* chartist-plugin-barlabels-webpack <%= pkg.version %>\n * Copyright © <%= year %> Matt Gibbs\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */\n",
+    "banner": "/* chartist-plugin-barlabels-webpack <%= pkg.version %>\n * Copyright © <%= year %> Yorkshire Interactive\n * Free to use under the MIT license.\n *\n */\n",
     "src": "src",
     "dist": "dist",
     "tmp": ".tmp",
@@ -61,5 +61,5 @@
   "directories": {
     "test": "test"
   },
-  "license": "ISC"
+  "license": "MIT"
 }
