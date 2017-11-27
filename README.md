@@ -1,138 +1,112 @@
-# chartist-plugin-barlabels
+# Chartist Bar Labels Demo
 
-[![Build Status](https://travis-ci.org/mtgibbs/chartist-plugin-barlabels.svg?branch=master)](https://travis-ci.org/mtgibbs/chartist-plugin-barlabels)
-[![NPM Version](https://img.shields.io/npm/v/chartist-plugin-barlabels.svg)](https://www.npmjs.com/package/chartist-plugin-barlabels)
+A simple Chartist plugin to put labels on top of bar charts. Options are at the
+bottom. This is a modification of the YorkshireInteractive bar labels plugin designed for use in webpack. Check out their project page at:
+[YorkshireInteractive/chartist-bar-labels](https://github.com/YorkshireInteractive/chartist-bar-labels)
 
-[Chartist-js](https://github.com/gionkunz/chartist-js) Plugin for labelling the end of bars in Bar Charts.
+## Default usage
 
+<div class="ct-chart"><img src="src/images/ct-chart.png"></div>
 
-## Usage
-
-##### Default Options
-
-There are two sets of default options depending on if the chart.options has horizontalBars set to true or false.
-
-```javascript
-// if chart.options.horizontalBars == true
-
-var defaultOptions = {
-  labelClass: 'ct-label',
-  labelInterpolationFnc: Chartist.noop,
-  labelOffset: {
-    x: 2,
-    y: 4
+```js
+var chart1 = new Chartist.Bar('.ct-chart', {
+  labels: ['Feb', 'Mar', 'Apr', 'May'],
+  series: [
+    [19, 15, 9, 13]
+  ],
+  },{
+  height: 400,
+  axisY: {
+    onlyInteger: true
   },
-  labelPositionFnc: undefined,
-  startAtBase: undefined,
-  textAnchor: 'start',
-  showZeroLabels: false,
-  includeIndexClass: false,
-  thresholdPercentage: 30,
-  thresholdOptions: {
-    belowLabelClass: 'ct-label-below',
-    aboveLabelClass: 'ct-label-above'
-  }
-}
+  plugins: [
+    Chartist.plugins.ctBarLabels()
+  ]
+});
 ```
+      
 
-```javascript
-// if chart.options.horizontalBars == false / undefined
+## Custom positioning and labeling usage
 
-var defaultOptions = {
-  labelClass: 'ct-label',
-  labelInterpolationFnc: Chartist.noop,
-  labelOffset: {
-    x: 0,
-    y: -2
+<div class="ct-chart-2"><img src="src/images/ct-chart-2.png"></div>
+
+```js
+var chart2 = new Chartist.Bar('.ct-chart-2', {
+  labels: ['% to Campaign Goal', '% to Prior Month', '% to Prior Year'],
+  series: [
+    [127, 211, 146]
+  ]
+}, {
+  chartPadding: {
+    right: 50
   },
-  labelPositionFnc: undefined,
-  startAtBase: undefined,
-  textAnchor: 'middle',
-  showZeroLabels: false,
-  includeIndexClass: false,
-  thresholdPercentage: 30,
-  thresholdOptions: {
-    belowLabelClass: 'ct-label-below',
-    aboveLabelClass: 'ct-label-above'
-  }
-}
-```
-
-##### Label Position Function
-
-The label position function can be used to conditionally influence the location of the label relative to the bar.  The function has some bar data being passed to it in this format:
-
-```javascript
-{
-  high: number; // the highest value in the chart or the defined high in the options
-  value: number; // the value of the bar that the label will belong to
-  threshold: number; // the percentage threshold defined in the options
-}
-```
-
-The function must return labelOffset and textAnchor data otherwise when this data is undefined it will fall back on the default offsets.
-
-```javascript
-{
-  labelOffset: {
-    x: number // the offset to the label on the X axis
-    y: number // the offset to the label on the Y axis
+  height: 350,
+  horizontalBars: true,
+  reverseData: true,
+  axisX: {
+    labelInterpolationFnc: function(value) {
+      return value + '%';
+    },
+    onlyInteger: true,
   },
-  textAnchor: string // the css text-anchor value
-}
-
-```
-
-The plugin comes with a default example.
-
-```javascript
-Chartist.plugins.ctBarLabels.InsetLabelsPositionHorizontal = function(data) {
-
-  if (data.high && data.value && data.threshold) {
-    var aboveThreshold = (data.value / data.high * 100 > data.threshold);
-
-    if (aboveThreshold) {
-      return {
-        labelOffset: {
-          x: -2,
-          y: 4
-        },
-        textAnchor: 'end'
+  axisY: {
+    offset: 135,
+  },
+  plugins: [
+    Chartist.plugins.ctBarLabels({
+      position: {
+        x: function (data) {
+          return data.x1 + 50
+        }
+      },
+      labelOffset: {
+        y: 7
+      },
+      labelInterpolationFnc: function (text) {
+        return text + '%'
       }
-    } else {
-      return {
-        labelOffset: {
-          x: 2,
-          y: 4
-        },
-        textAnchor: 'start'
-      };
+    })
+  ]
+});
+```
+
+## Options
+
+`labelClass` (default: `ct-bar-label`)
+
+The class name so you can style the text
+
+
+`labelInterpolationFnc` (default: `null`)
+
+Use this to get the text of the data and you can return your own
+formatted text. For example, for a percentage you could do this
+
+```
+Chartist.plugins.ctBarLabels({
+ labelInterpolationFnc: function (text) { return text + '%' }
+});
+```
+
+`labelOffset.x` (default: `0`) and `labelOffset.y` (default: `0`)
+
+Depending on your font size you may need to tweak these. This will nudge the
+labels by the amount of pixels given.
+
+`position.x` (default: `null`) and `position.y` (default: `null`)
+
+If labelOffset doesn't work for you and you need more custom positioning you
+can use this. You can set position.x and position.y to functions and instead of
+centering + labelOffset. This will _completely_ override the built in
+positioning so labelOffset will no longer do anything. It will pass the bar
+`data` back as the first param. Example:
+
+```
+Chartist.plugins.ctBarLabels({
+  position: {
+    x: function (data) {
+      return data.x1 + 50; // align left with 50px of padding
     }
   }
-};
+});
 ```
-
-##### Example Script
-
-```javascript
-new Chartist.Bar('#test-bar-chart', {
-    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-    series: [
-      [5, 4, 3, 7, 5, 10, 3],
-      [1, 2, 3, 4, 5, 6, 7]
-    ]
-  }, {
-    seriesBarDistance: 10,
-    reverseData: true,
-    horizontalBars: true,
-    axisY: {
-      offset: 70
-    },
-    plugins: [
-      Chartist.plugins.ctBarLabels()
-    ]
-  });
-```
-
-##### Example Screenshot
-![Example Graph](http://i.imgur.com/RJcOkJM.png)
