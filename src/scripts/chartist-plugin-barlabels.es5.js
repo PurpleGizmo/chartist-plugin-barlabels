@@ -89,16 +89,22 @@
 					return (data.y1 + data.y2) / 2 + options.labelOffset.y;
 				};
 
-				// RKM: Function for extracting function name.
+				// RKM: Attempts to extract the function's name. Doesn't work well in minified settings.
 				var getFunctionName = function getFunctionName(fnc) {
 					var constructorName = /^function\s+([\w\$]+)\s*\(/.exec(fnc.__proto__.constructor.toString());
-					return constructorName.length === 2 ? constructorName[1] : '';
+					return constructorName && constructorName.length === 2 ? constructorName[1] : '';
+				};
+
+				// RKM: Attempts to locate the super constructor called within the function. Experimental hack for dealing with minification.
+				var getSuperConstructorName = function getSuperConstructorName(fnc) {
+					var constructorName = /^function[^{]+{[^\.]+\.([^\.]+).super\.constructor\.call/.exec(fnc.__proto__.constructor.toString());
+					return constructorName && constructorName.length === 2 ? constructorName[1] : '';
 				};
 
 				return function ctBarLabels(chart) {
-					// Since it's specific to bars, verify its a bar chart
-					// RKM: Use regex to extract name of constructor function for compatibility with webpack.
-					if (getFunctionName(chart) === 'Bar') {
+					// Since it's specific to bars, verify it's a bar chart
+					// RKM: For compatibility with webpack, use regex functions to determine constructor function's name.
+					if (getFunctionName(chart) === 'Bar' || getSuperConstructorName(chart) === 'Bar') {
 						chart.on('draw', function (data) {
 							// If the data we're drawing is the actual bar, let's add the text
 							// inside of it
