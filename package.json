@@ -1,7 +1,7 @@
 {
   "name": "chartist-plugin-barlabels-webpack",
   "description": "Bar Labels Plugin for Chartist.js and webpack bundling",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "author": "Robert Miller; Yorkshire Interactive",
   "repository": {
     "type": "git",
